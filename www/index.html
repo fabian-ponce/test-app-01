@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html ng-app="App">
+<head>
+    <title>Administrador de salas - Colegio X</title>
+    <link rel="stylesheet" href="./libs/main.css" />
+    <link rel="stylesheet" href="./libs/bootstrap.min.css" />
+
+    <script src="./libs/jquery-3.3.1.slim.min.js"></script>
+    <script src="./libs/popper.min.js"></script>
+    <script src="./libs/bootstrap.min.js"></script>
+
+    <script src="./libs/angular.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid"><div class="row"><div class="col-1 col-lg-2"></div><div class="col-10 col-lg-8">
+
+    <div ng-controller="MainCtrl as $">
+        <!-- LISTAS -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="inicio" href="javascript:void(0)" ng-click="$.focus(1)"><img id="iLogo" src="./images/logo.jpg"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="inicio" href="javascript:void(0)" ng-click="$.focus(1)">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="estudiantes" href="javascript:void(0)" ng-click="$.focus(2)">Estudiantes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="materias" href="javascript:void(0)" ng-click="$.focus(3)">Materias</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="grupos" href="javascript:void(0)" ng-click="$.focus(4)">Grupos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="salas" href="javascript:void(0)" ng-click="$.focus(5)">Salas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="horario" href="javascript:void(0)" ng-click="$.focus(6)">Horarios</a>
+            </li>
+        </ul>
+        <!-- Contenido de páginas -->
+        <div ng-init="$._inicio = true" class="tab-content" id="myTabContent">
+            <div ng-if="$._inicio">
+                <div id="iWellcome">
+                    Bienvenidos a la aplicación de gestión de horarios y grupos.
+                    <br />
+                    <img src="./images/bg.jpg">
+                    <br />
+                    
+                </div>
+                <hr />
+                Navega a través del menú para modificar la información respectiva.
+            </div>
+            <!-- Lista de estudiantes -->
+            <div ng-if="$._estudiantes">
+                <div>
+                    <h1 class="iTitulo">Lista de estudiantes</h1>
+                    <table ng-if="$.estudiantes.length">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Documento</th>
+                                <th>Nombre</th>
+                                <th>Edad</th>
+                                <th>Genero</th>
+                                <th>Grupo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="estudiante in $.estudiantes">
+                                <td>
+                                    <input class="btn btn-success" type="button" value="✓" ng-click="$.updateEstudiante(estudiante)"/>
+                                    <input class="btn btn-danger" type="button" value="X" ng-click="$.deleteEstudiante(estudiante.idEstudiante)"/>
+                                </td>
+                                <td><input class="form-control" type="text" ng-model="estudiante.idEstudiante" disabled/></td>
+                                <td><input class="form-control" type="text" ng-model="estudiante.nombre" /></td>
+                                <td><input class="form-control" type="text" ng-model="estudiante.edad" size="4"/></td>
+                                <td>
+                                    <select class="form-control" ng-model="estudiante.genero">
+                                        <option
+                                            ng-repeat="genero in $.generos"
+                                            ng-value="genero.id"
+                                        >{{genero.label}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-model="estudiante.idGrupo">
+                                        <option
+                                            ng-repeat="grupo in $.grupos"
+                                            ng-value="grupo.idGrupo"
+                                        >{{grupo.nombre}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-if="!$.estudiantes.length">No hay estudiantes para mostrar...</div>
+            </div>
+            <!-- Lista de materias -->
+            <div ng-if="$._materias">
+                <div>
+                    <h1 class="iTitulo">Lista de materias</h1>
+                    <table ng-if="$.materias.length">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Nombre</th>
+                                <th>Grupo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="materia in $.materias">
+                                <td>
+                                    <input class="btn btn-success" type="button" value="✓" ng-click="$.updateMateria(materia)"/>
+                                    <input class="btn btn-danger" type="button" value="X" ng-click="$.deleteMateria(materia.idMateria)"/>
+                                </td>
+                                <td><input class="form-control" type="text" ng-model="materia.nombre" /></td>
+                                <td>
+                                    <select class="form-control" ng-model="materia.idGrupo">
+                                        <option
+                                            ng-repeat="grupo in $.grupos"
+                                            ng-value="grupo.idGrupo"
+                                        >Grupo: {{grupo.nombre}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-if="!$.materias.length">No hay estudiantes para mostrar...</div>
+            </div>
+            <!-- Lista de grupos -->
+            <div ng-if="$._grupos">
+                <div>
+                    <h1 class="iTitulo">Lista de grupos</h1>
+                    <table ng-if="$.grupos.length">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Nombre</th>
+                                <th>Capacidad</th>
+                                <th>Materias</th>
+                                <th>Estudiantes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="grupo in $.grupos" ng-if="grupo.idGrupo != 1" style="border-bottom: 1px solid silver">
+                                <td>
+                                    <input class="btn btn-success" type="button" value="✓" ng-click="$.updateGrupo(grupo)"/>
+                                    <input class="btn btn-danger" type="button" value="X" ng-click="$.deleteGrupo(grupo.idGrupo)"/>
+                                </td>
+                                <td>
+                                    <input class="form-control" type="text" value="{{grupo.nombre}}" size="5"/>
+                                </td>
+                                <td>
+                                    <input class="form-control" type="text" value="{{grupo.capacidad}}" size="2"/>
+                                </td>
+                                <!-- Lista de materias -->
+                                <td>
+                                    <div class="content-fluid" style="min-width: 200px;">
+                                        <div>
+                                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModalLong2" ng-click="$.agregandoMateriaAGrupo = grupo.idGrupo">Agregar materia</button>
+                                        </div>
+                                        <div class="row" ng-repeat="materia in $.materias">
+                                            <div ng-if="grupo.idMaterias.indexOf(materia.idMateria) != -1" class="col">
+                                                <span>{{materia.nombre}}</span>
+                                                <span ng-if="grupo.idGrupo != 1" class="iBotonCerrar" ng-click="$.deleteMateriaFromGrupo(grupo, materia)">X</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <!-- Lista de estudiantes -->
+                                <td>
+                                    <div class="content-fluid" style="min-width: 200px;">
+                                        <div ng-if="grupo.idGrupo != 1">
+                                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModalLong1" ng-click="$.agregandoEstudianteAGrupo = grupo.idGrupo">Agregar estudiante</button>
+                                        </div>
+                                        <div class="row" ng-repeat="estudiante in $.estudiantes">
+                                            <div ng-if="grupo.idEstudiantes.indexOf(estudiante.idEstudiante) != -1" class="col">
+                                                <span>{{estudiante.nombre}}</span>
+                                                <span ng-if="grupo.idGrupo != 1" class="iBotonCerrar" ng-click="$.deleteEstudianteFromGrupo(grupo, estudiante)">X</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-if="!$.grupos.length">No hay estudiantes para mostrar...</div>
+            </div>
+            <!-- Lista de salas -->
+            <div ng-if="$._salas">
+                <div>
+                    <h1 class="iTitulo">Lista de salas</h1>
+                    <table ng-if="$.salas.length">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Nombre</th>
+                                <th>Capacidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="sala in $.salas">
+                                <td>
+                                    <input class="btn btn-success" type="button" value="✓" ng-click="$.updateSala(sala)"/>
+                                    <!-- <input class="btn btn-danger" type="button" value="X" ng-click="$.deleteSala(sala.idSala)"/> -->
+                                </td>
+                                <td><input class="form-control" type="text" ng-model="sala.nombre" /></td>
+                                <td><input class="form-control" type="text" ng-model="sala.capacidad" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-if="!$.salas.length">No hay estudiantes para mostrar...</div>
+            </div>
+            <!-- Lista de horios -->
+            <div ng-if="$._horario">
+                    <h1 class="iTitulo">Asignación de Horarios</h1>
+                <div>
+                    <table class="mt-4">
+                        <thead>
+                            <tr>
+                                <th>Materia</th>
+                                <th>Sala</th>
+                                <th>Horario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <select class="form-control" ng-model="$.nuevoAsignacion.idMateria">
+                                        <option
+                                            ng-repeat="materia in $.materias"
+                                            ng-value="materia.idMateria"
+                                        >Materia: {{materia.nombre}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-model="$.nuevoAsignacion.idSala">
+                                        <option
+                                            ng-repeat="sala in $.salas"
+                                            ng-value="sala.idSala"
+                                        >Sala: {{sala.nombre}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-model="$.nuevoAsignacion.idHorario">
+                                        <option
+                                            ng-repeat="horario in $.horarios"
+                                            ng-value="horario.idHorario"
+                                        >Horario: {{horario.nombre}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="mt-2 btn btn-success btn-sm" ng-click="$.addAsignacionHorario($.nuevoAsignacion)">Asignar horario</button>    
+                </div>
+                <hr />
+                <div ng-if="$.asignacionHorarios.length">
+                  <h1 class="mt-4">Lista de asignaciones</h1>
+                    <table class="mt-4">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Materia</th>
+                                <th>Sala</th>
+                                <th>Horario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="ah in $.asignacionHorarios">
+                                <td>
+                                    <input class="btn btn-danger" type="button" value="X" ng-click="$.deleteAsignacionHorario(ah.id_asignacion_materia)"/>
+                                </td>
+                                <td><input disabled class="form-control" type="text" value="{{ah.nombreMateria}}" /></td>
+                                <td><input disabled class="form-control" type="text" value="{{ah.nombreSala}}" /></td>
+                                <td><input disabled class="form-control" type="text" value="{{ah.nombreHorario}}" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-if="!$.asignacionHorarios.length">No hay asignaciones de horario para mostrar...</div>
+            </div>
+        </div>
+        
+        <!-- Botón crear modal -->
+        <div ng-if="!$._inicio && !$._horario">
+            <button type="button" class="mt-4 btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Crear nuevo elemento</button>
+        </div>
+
+        <!-- PIE DE PÁGINA -->
+        <hr />
+        <div id="iCR">
+            Copyright Fabián Ocampo - 2019
+        </div>
+        <br />
+
+        <!-- Modal de crear recurso -->
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Agregar elemento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                        
+                    <!-- POSIBLES BODIES -->
+                    
+                    <!-- Agregar grupo -->
+                    <div ng-if="$._grupos" class="modal-body">
+                        <h1 class="iTitulo">Agregar grupo</h1>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><input class="form-control" ng-model="$.nuevoGrupo.nombre" type="text" placeholder="Nombre" /></td>
+                                    <td><input class="form-control" ng-model="$.nuevoGrupo.capacidad" type="text" placeholder="Capacidad" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Agregar estudiante -->
+                    <div ng-if="$._estudiantes" class="modal-body">
+                        <h1 class="iTitulo">Agregar estudiante</h1>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>Número de documento</div>
+                                        <input class="form-control" ng-model="$.nuevoEstudiante.idEstudiante" type="number" placeholder="TI" />
+                                    </td>
+                                    <td colspan="2">
+                                        <div>Nombre completo</div>
+                                        <input class="form-control" ng-model="$.nuevoEstudiante.nombre" type="text" placeholder="Nombre" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>Edad</div>
+                                        <input class="form-control" ng-model="$.nuevoEstudiante.edad" type="number" placeholder="Edad" />
+                                    </td>
+                                    <td>
+                                        <div>Genero:</div>
+                                        <select class="form-control" ng-model="$.nuevoEstudiante.genero">
+                                            <option
+                                                ng-repeat="genero in $.generos"
+                                                ng-value="genero.id"
+                                            >{{genero.label}}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div>Grupo:</div>
+                                        <select class="form-control" ng-model="$.nuevoEstudiante.idGrupo">
+                                            <option
+                                                ng-repeat="grupo in $.grupos"
+                                                ng-value="grupo.idGrupo"
+                                            >{{grupo.nombre}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Agregar sala -->
+                    <div ng-if="$._salas" class="modal-body">
+                        <h1 class="iTitulo">Agregar sala</h1>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><input class="form-control" ng-model="$.nuevoSala.nombre" type="text" placeholder="Nombre" /></td>
+                                    <td><input class="form-control" ng-model="$.nuevoSala.capacidad" type="text" placeholder="Capacidad" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Agregar materia -->
+                    <div ng-if="$._materias" class="modal-body">
+                        <h1 class="iTitulo">Agregar materia</h1>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><input class="form-control" ng-model="$.nuevoMateria.nombre" type="text" placeholder="Nombre" /></td>
+                                    <td>
+                                        <select class="form-control" ng-model="$.nuevoMateria.idGrupo">
+                                            <option ng-value="1" selected>Sin grupo</option>
+                                            <option
+                                                ng-if="grupo.idGrupo != 1"
+                                                ng-repeat="grupo in $.grupos"
+                                                ng-value="grupo.idGrupo"
+                                            >{{grupo.nombre}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- POSIBLES FOOTERS  -->
+                    <div ng-if="$._grupos" class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="$.addGrupo($.nuevoGrupo)">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div ng-if="$._estudiantes" class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="$.addEstudiante($.nuevoEstudiante)">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div ng-if="$._salas" class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="$.addSala($.nuevoSala)">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div ng-if="$._materias" class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="$.addMateria($.nuevoMateria)">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal agregar estudiante a grupo -->
+        <div class="modal fade" id="exampleModalLong1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLong1Title" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLong1Title">Agregar elemento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <!-- CONTENIDO -->
+                        <div ng-repeat="grupo in $.grupos">
+                            <div ng-if="grupo.idGrupo == 1">
+                                <div ng-repeat="estudiante in $.estudiantes">
+                                    <div ng-if="estudiante.idGrupo == grupo.idGrupo">
+                                        <button class="btn btn-success btn-sm" ng-click="$.addEstudianteAGrupo(estudiante, $.agregandoEstudianteAGrupo)">{{estudiante.nombre}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal agregar materia a grupo -->
+        <div class="modal fade" id="exampleModalLong2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLong2Title" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLong2Title">Agregar elemento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <!-- CONTENIDO -->
+                        <div ng-repeat="grupo in $.grupos">
+                            <div ng-if="grupo.idGrupo == 1">
+                                <div ng-repeat="materia in $.materias">
+                                    <div ng-if="materia.idGrupo == grupo.idGrupo">
+                                        <button class="btn btn-success btn-sm" ng-click="$.addMateriaAGrupo(materia, $.agregandoMateriaAGrupo)">{{materia.nombre}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensajes -->
+        <div id="iErrorMsg">
+            {{$.iErrorMsg}}
+        </div>
+        <div id="iSuccessMsg">
+            {{$.iSuccessMsg}}
+        </div>
+
+
+    </div>
+
+    </div><div class="col-1 col-lg-2"></div></div>
+    <script src="./libs/main.js"></script>
+
+</body>
+</html>
